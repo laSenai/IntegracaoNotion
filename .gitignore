@@ -1,0 +1,25 @@
+# Ignorar dependências do Node.js
+node_modules/
+npm-debug.log
+yarn.lock
+package-lock.json
+
+# Ignorar configurações de ambiente
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignorar arquivos de build e logs
+dist/
+build/
+logs/
+*.log
+
+# Ignorar IDEs e editores de código
+.vscode/
+.idea/
+.DS_Store
+
+# Ignorar Notion API Cache (caso use)
+.cache/
