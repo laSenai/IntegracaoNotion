@@ -1,2 +1,3 @@
-2025/03/21-19:18:00.620 4f0c Creating DB C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Service Worker\Database since it was missing.
-2025/03/21-19:18:00.632 4f0c Reusing MANIFEST C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
+2025/03/24-08:40:26.069 3e64 Reusing MANIFEST C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Service Worker\Database/MANIFEST-000001
+2025/03/24-08:40:26.070 3e64 Recovering log #3
+2025/03/24-08:40:26.071 3e64 Reusing old log C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Service Worker\Database/000003.log 

@@ -1,2 +1,3 @@
-2025/03/21-19:17:59.491 920 Creating DB C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Session Storage since it was missing.
-2025/03/21-19:17:59.503 920 Reusing MANIFEST C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Session Storage/MANIFEST-000001
+2025/03/24-08:40:26.636 960 Reusing MANIFEST C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Session Storage/MANIFEST-000001
+2025/03/24-08:40:26.637 960 Recovering log #3
+2025/03/24-08:40:26.637 960 Reusing old log C:\Users\senai\Documents\GitHub\IntegracaoNotion\.wwebjs_auth\session\Default\Session Storage/000003.log 
