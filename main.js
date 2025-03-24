@@ -4,45 +4,47 @@ import qrcode from 'qrcode-terminal';
 import qrCodeData from 'qrcode';
 import pkg from 'whatsapp-web.js';
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
-const notion = new NotionClient({
-    auth: process.env.NOTION_TOKEN
-});
-
+const notion = new NotionClient({ auth: process.env.NOTION_TOKEN });
 const chatIdDestino = '553195235384@c.us'; // Substitua pelo ID do chat
-
 const { Client, LocalAuth } = pkg;
 
-const whatsappClient = new Client({
-    authStrategy: new LocalAuth(),
-});
-
+const whatsappClient = new Client({ authStrategy: new LocalAuth() });
+const qrCodePath = path.join('/tmp', 'qrcode.png');
 let qrCode = '';
 
-whatsappClient.on('qr', (qr) => {
+whatsappClient.on('qr', async (qr) => {
     qrcode.generate(qr, { small: true });
     qrCode = qr;
+
+    // Gerar QR Code como imagem
+    const qrImage = await qrCodeData.toDataURL(qr);
+    const base64Data = qrImage.replace(/^data:image\/png;base64,/, '');
+    fs.writeFileSync(qrCodePath, base64Data, 'base64');
 });
 
 whatsappClient.on('ready', () => {
     console.log('Bot do WhatsApp está pronto!');
-    verificarTarefasHoje(); // Verifica provas no início do bot
+    verificarTarefasHoje();
 });
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.get('/qrcode', async (req, res) => {
-    if (!qrCode) {
+app.use('/static', express.static('/tmp'));
+
+app.get('/qrcode', (req, res) => {
+    if (!fs.existsSync(qrCodePath)) {
         return res.send('<h2>Nenhum QR Code disponível no momento. Aguarde...</h2>');
     }
-
-    const qrImage = await qrCodeData.toDataURL(qrCode);
-    res.send(`<h2>Escaneie o QR Code abaixo para conectar:</h2><img src="${qrImage}" />`);
+    res.send(`<h2>Escaneie o QR Code abaixo para conectar:</h2><img src="/static/qrcode.png" />`);
 });
 
-app.listen(3000, () => console.log('🔹 Acesse http://localhost:3000/qrcode para escanear o QR Code.'));
+app.listen(PORT, () => console.log(`🔹 Acesse http://localhost:${PORT}/qrcode para escanear o QR Code.`));
 
 async function getTasks() {
     const filter = { database_id: process.env.NOTION_DATABASE_ID };
@@ -64,10 +66,7 @@ function converterData(dataAmericana) {
 function verificarDataHoje(data) {
     const dataAtual = new Date();
     const [ano, mes, dia] = dataAtual.toISOString().split('T')[0].split('-');
-
-    const dataFormatada = `${dia}/${mes}/${ano}`;
-
-    return data === dataFormatada;
+    return data === `${dia}/${mes}/${ano}`;
 }
 
 async function verificarTarefasHoje() {
@@ -88,23 +87,17 @@ whatsappClient.on('message_create', async (message) => {
     if (message.body === '!ping') {
         await message.reply('pong');
     }
-
     if (message.body === '!tasks') {
         const tasks = await getTasks();
-        const response = tasks
-            .sort((a, b) => new Date(a.data) - new Date(b.data)) // Ordena por data crescente
+        const response = tasks.sort((a, b) => new Date(a.data) - new Date(b.data))
             .map(task => `📌 *Prova:* ${task.title}\n📅 *Data:* ${task.data}`)
             .join('\n\n');
-
         await message.reply(response || 'Nenhuma prova encontrada.');
     }
-
     if (message.body === '!chatid') {
         await message.reply(`O ID deste chat é: ${message.from}`);
     }
 });
 
-// Verifica as provas diariamente
-setInterval(verificarTarefasHoje, 24 * 60 * 60 * 1000); // Executa a cada 24 horas
-
+setInterval(verificarTarefasHoje, 24 * 60 * 60 * 1000);
 whatsappClient.initialize();
