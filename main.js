@@ -1,7 +1,9 @@
 import * as dotenv from 'dotenv';
 import { Client as NotionClient } from '@notionhq/client';
 import qrcode from 'qrcode-terminal';
+import qrCodeData from 'qrcode';
 import pkg from 'whatsapp-web.js';
+import express from 'express';
 
 dotenv.config();
 
@@ -17,14 +19,30 @@ const whatsappClient = new Client({
     authStrategy: new LocalAuth(),
 });
 
+let qrCode = '';
+
 whatsappClient.on('qr', (qr) => {
     qrcode.generate(qr, { small: true });
+    qrCode = qr;
 });
 
 whatsappClient.on('ready', () => {
     console.log('Bot do WhatsApp está pronto!');
     verificarTarefasHoje(); // Verifica provas no início do bot
 });
+
+const app = express();
+
+app.get('/qrcode', async (req, res) => {
+    if (!qrCode) {
+        return res.send('<h2>Nenhum QR Code disponível no momento. Aguarde...</h2>');
+    }
+
+    const qrImage = await qrCodeData.toDataURL(qrCode);
+    res.send(`<h2>Escaneie o QR Code abaixo para conectar:</h2><img src="${qrImage}" />`);
+});
+
+app.listen(3000, () => console.log('🔹 Acesse http://localhost:3000/qrcode para escanear o QR Code.'));
 
 async function getTasks() {
     const filter = { database_id: process.env.NOTION_DATABASE_ID };
