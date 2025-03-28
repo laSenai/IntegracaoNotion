@@ -51,7 +51,7 @@ app.listen(3000, () => console.log(`🔹 Acesse https://integracaonotion.onrende
 
 // Função para fazer ping periódico
 const pingSelf = () => {
-    const url = `https://integracaonotion.onrender.com/qrcode`;
+    const url = `https://integracaonotion.onrender.com/ping`;
     axios.get(url)
         .then(() => console.log('Ping realizado com sucesso.'))
         .catch(err => console.error('Erro ao realizar o ping:', err));
