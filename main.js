@@ -52,11 +52,11 @@ app.get('/ping', (req, res) => {
     res.send('pong');
 });
 
-app.listen(3000, () => console.log(`🔹 Acesse https://integracaonotion.onrender.com/qrcode para escanear o QR Code.`));
+app.listen(3000, () => console.log(`🔹 Acesse https://localhoste:${process.env.PORT}/qrcode para escanear o QR Code.`));
 
 // Função para fazer ping periódico
 const pingSelf = () => {
-    const url = `https://integracaonotion.onrender.com/ping`;
+    const url = `https://localhoste:${process.env.PORT}/ping`;
     axios.get(url)
         .then(() => console.log('Ping realizado com sucesso.'))
         .catch(err => console.error('Erro ao realizar o ping:', err));
