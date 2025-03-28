@@ -17,7 +17,12 @@ const { Client, LocalAuth } = pkg;
 
 const whatsappClient = new Client({
     authStrategy: new LocalAuth(),
+    puppeteer: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-gpu'],
+    },
 });
+
 
 let qrCode = '';
 
