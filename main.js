@@ -42,7 +42,23 @@ app.get('/qrcode', async (req, res) => {
     res.send(`<h2>Escaneie o QR Code abaixo para conectar:</h2><img src="${qrImage}" />`);
 });
 
+// Rota de ping para manter a aplicação ativa
+app.get('/ping', (req, res) => {
+    res.send('pong');
+});
+
 app.listen(3000, () => console.log(`🔹 Acesse http://localhost:${process.env.PORT}/qrcode para escanear o QR Code.`));
+
+// Função para fazer ping periódico
+const pingSelf = () => {
+    const url = `http://localhost:${PORT}/ping`;
+    axios.get(url)
+        .then(() => console.log('Ping realizado com sucesso.'))
+        .catch(err => console.error('Erro ao realizar o ping:', err));
+};
+
+// Configura um intervalo para realizar o ping a cada 14 minutos
+setInterval(pingSelf, 14 * 60 * 1000);
 
 async function getTasks() {
     const filter = { database_id: process.env.NOTION_DATABASE_ID };
